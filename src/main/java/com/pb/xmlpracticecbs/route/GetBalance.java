@@ -67,7 +67,7 @@ public class GetBalance extends RouteBuilder {
 
                 .convertBodyTo(String.class)
 
-                .setBody(simple("${body}|"))
+                .setBody(simple("${body}"))
 
                 .log("CBS sending response: ${body}")
                 .setHeader("Content-Type", constant("application/xml"));
