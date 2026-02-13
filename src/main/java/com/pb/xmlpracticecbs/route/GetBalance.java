@@ -9,6 +9,9 @@ public class GetBalance extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
+        onException(Exception.class)
+                .setBody(simple("error occured"));
+
         // ✅ REST Configuration using Jetty
         restConfiguration()
                 .component("jetty")
@@ -46,7 +49,7 @@ public class GetBalance extends RouteBuilder {
                                 "    <mobileNumber>${exchangeProperty.mobileNumber}</mobileNumber>\n" +
                                 "    <status>SUCCESS</status>\n" +
                                 "    <message>Valid mobile number</message>\n" +
-                                "</response>|"
+                                "</response>"
                 ))
                 .otherwise()
                 // Invalid mobile number
@@ -58,11 +61,13 @@ public class GetBalance extends RouteBuilder {
                                 "    <mobileNumber>${exchangeProperty.mobileNumber}</mobileNumber>\n" +
                                 "    <status>FAILED</status>\n" +
                                 "    <message>Invalid mobile number - must be 10 digits</message>\n" +
-                                "</response>|"
+                                "</response>"
                 ))
                 .end()
 
                 .convertBodyTo(String.class)
+
+                .setBody(simple("${body}|"))
 
                 .log("CBS sending response: ${body}")
                 .setHeader("Content-Type", constant("application/xml"));
